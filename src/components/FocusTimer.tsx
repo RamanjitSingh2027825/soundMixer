@@ -9,28 +9,25 @@ const WORK_MINUTES = 25;
 const BREAK_MINUTES = 5;
 
 const FocusTimer: React.FC<FocusTimerProps> = ({ onPhaseChange }) => {
+  const [phase, setPhase] = useState<'work' | 'break'>('work');
   const [timeLeft, setTimeLeft] = useState(WORK_MINUTES * 60);
   const [isActive, setIsActive] = useState(false);
-  const [phase, setPhase] = useState<'work' | 'break'>('work');
 
   useEffect(() => {
     let interval: any;
     if (isActive && timeLeft > 0) {
       interval = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     } else if (timeLeft === 0) {
-      // Timer finished
       const nextPhase = phase === 'work' ? 'break' : 'work';
       setPhase(nextPhase);
-      setTimeLeft(nextPhase === 'work' ? WORK_MINUTES * 60 : BREAK_MINUTES * 60);
-      setIsActive(false); // Pause auto-start or keep true to loop
       onPhaseChange(nextPhase);
-      // Optional: Play a chime sound here
+      setTimeLeft(nextPhase === 'work' ? WORK_MINUTES * 60 : BREAK_MINUTES * 60);
+      setIsActive(false);
     }
     return () => clearInterval(interval);
   }, [isActive, timeLeft, phase, onPhaseChange]);
 
   const toggleTimer = () => setIsActive(!isActive);
-  
   const resetTimer = () => {
     setIsActive(false);
     setPhase('work');
@@ -44,41 +41,54 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onPhaseChange }) => {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const progress = 1 - timeLeft / (phase === 'work' ? WORK_MINUTES * 60 : BREAK_MINUTES * 60);
+  const totalTime = phase === 'work' ? WORK_MINUTES * 60 : BREAK_MINUTES * 60;
+  const progress = 1 - timeLeft / totalTime;
+  const strokeColor = phase === 'work' ? '#818cf8' : '#34d399'; // Indigo vs Emerald
 
   return (
-    <div className="relative w-64 h-64 flex flex-col items-center justify-center">
-      {/* Circular Progress Background */}
-      <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" className="stroke-slate-800" strokeWidth="4" fill="none" />
-        <circle 
-          cx="50" cy="50" r="45" 
-          className={`transition-all duration-1000 ${phase === 'work' ? 'stroke-indigo-500' : 'stroke-emerald-500'}`} 
-          strokeWidth="4" fill="none" 
-          strokeDasharray="283" 
-          strokeDashoffset={283 * (1 - progress)} 
-          strokeLinecap="round"
-        />
-      </svg>
+    <div className="flex flex-col items-center justify-center relative">
+      {/* Glow Effect behind timer */}
+      <div className={`absolute inset-0 blur-3xl opacity-30 rounded-full ${isActive ? 'animate-pulse' : ''}`} 
+           style={{ backgroundColor: strokeColor }} />
 
-      {/* Content */}
-      <div className="z-10 flex flex-col items-center gap-2">
-        <div className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full ${phase === 'work' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-emerald-500/10 text-emerald-400'}`}>
-          {phase === 'work' ? <Brain className="w-3 h-3" /> : <Coffee className="w-3 h-3" />}
-          {phase} mode
-        </div>
-        
-        <div className="text-5xl font-mono font-bold text-slate-100 tracking-tighter">
-          {formatTime(timeLeft)}
-        </div>
+      <div className="relative w-72 h-72">
+        <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-2xl" viewBox="0 0 100 100">
+          {/* Track */}
+          <circle cx="50" cy="50" r="45" className="stroke-white/10" strokeWidth="2" fill="none" />
+          {/* Progress */}
+          <circle 
+            cx="50" cy="50" r="45" 
+            stroke={strokeColor}
+            strokeWidth="2" 
+            fill="none" 
+            strokeDasharray="283" 
+            strokeDashoffset={283 * (1 - progress)} 
+            strokeLinecap="round"
+            className="transition-all duration-1000 ease-linear"
+          />
+        </svg>
 
-        <div className="flex gap-4 mt-2">
-          <button onClick={toggleTimer} className="p-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">
-            {isActive ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-1" />}
-          </button>
-          <button onClick={resetTimer} className="p-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition-colors">
-            <RotateCcw className="w-5 h-5" />
-          </button>
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-4 text-white/70`}>
+            {phase === 'work' ? <Brain className="w-3 h-3" /> : <Coffee className="w-3 h-3" />}
+            {phase}
+          </div>
+          
+          <div className="text-6xl font-light tracking-tighter text-white drop-shadow-lg">
+            {formatTime(timeLeft)}
+          </div>
+
+          <div className="flex gap-6 mt-6">
+            <button onClick={resetTimer} className="p-3 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all">
+              <RotateCcw className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={toggleTimer} 
+              className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            >
+              {isActive ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-1" />}
+            </button>
+          </div>
         </div>
       </div>
     </div>

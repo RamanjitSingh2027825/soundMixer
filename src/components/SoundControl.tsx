@@ -12,35 +12,45 @@ const SoundControl: React.FC<SoundControlProps> = ({ sound, volume, onChange }) 
   const isActive = volume > 0;
 
   return (
-    <div className={`group relative flex flex-col items-center p-4 rounded-2xl transition-all duration-300 ${isActive ? 'bg-slate-800/80 ring-1 ring-slate-700' : 'bg-slate-900/50 hover:bg-slate-800/50'}`}>
+    <div className={`group relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-500 border ${isActive ? 'bg-white/10 border-white/20 shadow-lg backdrop-blur-md' : 'bg-white/5 border-white/5 backdrop-blur-sm'}`}>
       
-      {/* Header */}
-      <div className="flex items-center gap-3 w-full mb-4">
-        <div className={`p-2 rounded-lg transition-colors ${isActive ? sound.color + ' bg-white/5' : 'text-slate-500'}`}>
-          <Icon className="w-6 h-6" />
-        </div>
-        <span className={`text-sm font-medium ${isActive ? 'text-slate-200' : 'text-slate-500'}`}>
-          {sound.label}
-        </span>
-      </div>
+      <button 
+        onClick={() => onChange(isActive ? 0 : 0.5)}
+        className={`p-3 rounded-xl transition-all duration-300 ${isActive ? 'bg-white text-black shadow-glow' : 'text-white/50 bg-white/5'}`}
+      >
+        <Icon className="w-5 h-5" />
+      </button>
 
-      {/* Slider */}
-      <input
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={volume}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className={`w-full h-2 rounded-lg appearance-none cursor-pointer transition-colors ${isActive ? 'bg-slate-700' : 'bg-slate-800'}`}
-        style={{
-          backgroundImage: `linear-gradient(to right, ${isActive ? 'currentColor' : 'transparent'} ${volume * 100}%, transparent ${volume * 100}%)`
-        }}
-      />
-      
-      {/* Value Readout (Optional) */}
-      <div className="absolute top-2 right-3 text-[10px] font-mono text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
-        {Math.round(volume * 100)}%
+      <div className="flex-1 flex flex-col gap-3">
+        <div className="flex justify-between items-center">
+          <span className={`text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-white/50'}`}>
+            {sound.label}
+          </span>
+        </div>
+
+        <div className="relative w-full h-4 flex items-center">
+           <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(e) => onChange(parseFloat(e.target.value))}
+            className="w-full z-10 opacity-0 cursor-pointer absolute inset-0 h-full"
+          />
+          {/* Custom Track Visualization */}
+          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative">
+             <div 
+                className={`h-full transition-all duration-100 ease-out ${isActive ? 'bg-white' : 'bg-white/30'}`}
+                style={{ width: `${volume * 100}%` }}
+             />
+          </div>
+          {/* Custom Thumb Visualization */}
+          <div 
+            className="h-4 w-4 bg-white rounded-full shadow-lg absolute pointer-events-none transition-all duration-100 ease-out"
+            style={{ left: `calc(${volume * 100}% - 8px)` }}
+          />
+        </div>
       </div>
     </div>
   );

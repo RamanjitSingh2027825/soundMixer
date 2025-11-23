@@ -2,21 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Slider Styles for Webkit */
+body {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Prevent body scroll, handle in App */
+}
+
+/* Hide Scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Custom Slider Styling */
+input[type=range] {
+  -webkit-appearance: none; 
+  background: transparent; 
+}
+
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 16px;
-  width: 16px;
+  height: 24px;
+  width: 24px;
   border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
-  margin-top: -4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  margin-top: -10px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255,255,255,0.1);
 }
 
 input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
-  height: 8px;
+  height: 4px;
   cursor: pointer;
   border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Background Animation */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+.animate-blob {
+  animation: blob 7s infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
 }

@@ -1,9 +1,14 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.flowstate.mixer',
-  appName: 'flow-state-mixer',
-  webDir: 'dist'
+  appName: 'Flow State Mixer',
+  webDir: 'dist',
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
+  },
 };
 
 export default config;

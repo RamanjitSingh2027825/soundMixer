@@ -1,95 +1,81 @@
-import { Zap, BookOpen, Moon, Shield, Code, PenTool, Coffee, Plane, CloudLightning, Anchor, Activity, Brain } from 'lucide-react';
+import { Zap, BookOpen, Moon, Shield, Code, PenTool, Coffee, Anchor, Activity, Brain, Sun, Feather } from 'lucide-react';
 
 export interface Preset {
   id: string;
   name: string;
   icon: any;
-  levels: Record<string, number>; // rain, brown, wind, drone
+  levels: Record<string, number>; // delta, theta, alpha, beta, gamma
 }
 
 export const PRESETS: Preset[] = [
   {
-    id: 'deep-work',
-    name: 'Deep Work',
-    icon: Brain,
-    levels: { brown: 0.8, drone: 0.3, rain: 0, wind: 0 } 
-    // Rationale: High Brown noise silences thought; Drone locks focus.
+    id: 'deep-sleep',
+    name: 'Deep Sleep',
+    icon: Moon,
+    levels: { delta: 0.8, theta: 0.2, alpha: 0, beta: 0, gamma: 0 }
+    // Dominant Delta for restorative sleep.
   },
   {
-    id: 'code-crunch',
-    name: 'Code Crunch',
-    icon: Code,
-    levels: { brown: 0.6, drone: 0.6, rain: 0, wind: 0.1 }
-    // Rationale: Intense Drone for logic processing, Brown for background.
+    id: 'lucid-dream',
+    name: 'Lucid Dream',
+    icon: Cloud,
+    levels: { theta: 0.7, delta: 0.3, alpha: 0.1, beta: 0, gamma: 0 }
+    // Theta heavy for REM state and visualization.
   },
   {
-    id: 'creative-flow',
+    id: 'meditation',
+    name: 'Zen Monk',
+    icon: Anchor,
+    levels: { theta: 0.5, alpha: 0.5, delta: 0, beta: 0, gamma: 0 }
+    // The "Awake-but-Asleep" bridge state.
+  },
+  {
+    id: 'flow-state',
     name: 'Creative Flow',
     icon: PenTool,
-    levels: { rain: 0.5, brown: 0.2, wind: 0, drone: 0.1 }
-    // Rationale: Pink noise (Rain) promotes relaxation without sleepiness.
+    levels: { alpha: 0.8, theta: 0.2, beta: 0, gamma: 0, delta: 0 }
+    // High Alpha promotes relaxed creativity without stress.
   },
   {
     id: 'reading',
-    name: 'Reading Lounge',
+    name: 'Reading Mode',
     icon: BookOpen,
-    levels: { rain: 0.4, wind: 0.1, brown: 0.1, drone: 0 }
-    // Rationale: Light texture that isn't intrusive to language processing.
+    levels: { alpha: 0.6, beta: 0.2, theta: 0, gamma: 0, delta: 0 }
+    // Alpha for calm, low Beta for linguistic processing.
   },
   {
-    id: 'anxiety-shield',
-    name: 'Anxiety Shield',
-    icon: Shield,
-    levels: { brown: 0.9, rain: 0.2, wind: 0, drone: 0 }
-    // Rationale: "Womb-like" heavy frequencies to ground the nervous system.
+    id: 'focus',
+    name: 'Deep Focus',
+    icon: Brain,
+    levels: { beta: 0.7, alpha: 0.3, gamma: 0, theta: 0, delta: 0 }
+    // Standard Beta for active work and logic.
   },
   {
-    id: 'noise-blocker',
-    name: 'Office Blocker',
-    icon: Activity,
-    levels: { wind: 0.6, brown: 0.5, rain: 0.3, drone: 0 }
-    // Rationale: White noise (Wind) masks human speech frequencies best.
+    id: 'intense-work',
+    name: 'Code Crunch',
+    icon: Code,
+    levels: { beta: 0.5, gamma: 0.5, alpha: 0, theta: 0, delta: 0 }
+    // Mixing Beta and Gamma for high-speed processing.
   },
   {
-    id: 'sleep-tunnel',
-    name: 'Sleep Tunnel',
-    icon: Moon,
-    levels: { brown: 0.7, rain: 0.1, wind: 0, drone: 0 }
-    // Rationale: Pure, dark noise to induce delta waves.
-  },
-  {
-    id: 'airplane-mode',
-    name: 'Airplane Cabin',
-    icon: Plane,
-    levels: { brown: 0.6, wind: 0.5, rain: 0, drone: 0 }
-    // Rationale: Simulates the engine drone for travel naps.
-  },
-  {
-    id: 'heavy-storm',
-    name: 'Heavy Storm',
-    icon: CloudLightning,
-    levels: { rain: 1.0, wind: 0.4, brown: 0.4, drone: 0 }
-    // Rationale: Maximal immersion for blocking the world out.
-  },
-  {
-    id: 'coffee-shop',
-    name: 'Muffled Cafe',
-    icon: Coffee,
-    levels: { brown: 0.5, wind: 0.2, rain: 0.1, drone: 0 }
-    // Rationale: Warm texture (Brown) + slight hiss (Wind) mimics distant AC/Chatter.
-  },
-  {
-    id: 'grounding',
-    name: 'Grounding',
-    icon: Anchor,
-    levels: { drone: 0.2, brown: 0.8, rain: 0, wind: 0 }
-    // Rationale: Heavy bass focus to calm jitters.
-  },
-  {
-    id: 'gamma-boost',
-    name: 'Gamma Boost',
+    id: 'peak-performance',
+    name: 'Limitless',
     icon: Zap,
-    levels: { drone: 1.0, wind: 0.1, brown: 0.1, rain: 0 }
-    // Rationale: Pure 40Hz drive for peak mental athletic performance.
+    levels: { gamma: 0.8, beta: 0.2, alpha: 0, theta: 0, delta: 0 }
+    // High Gamma for "A-Ha!" moments and memory binding.
+  },
+  {
+    id: 'morning-boost',
+    name: 'Sunrise',
+    icon: Sun,
+    levels: { beta: 0.6, gamma: 0.2, alpha: 0.2, theta: 0, delta: 0 }
+    // Wakes up the brain from grogginess.
+  },
+  {
+    id: 'anxiety-relief',
+    name: 'Calm Down',
+    icon: Feather,
+    levels: { alpha: 0.6, delta: 0.2, theta: 0.2, beta: 0, gamma: 0 }
+    // Grounding mix to lower heart rate.
   }
 ];

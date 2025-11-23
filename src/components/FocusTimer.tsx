@@ -43,19 +43,16 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onPhaseChange }) => {
 
   const totalTime = phase === 'work' ? WORK_MINUTES * 60 : BREAK_MINUTES * 60;
   const progress = 1 - timeLeft / totalTime;
-  const strokeColor = phase === 'work' ? '#818cf8' : '#34d399'; // Indigo vs Emerald
+  const strokeColor = phase === 'work' ? '#818cf8' : '#34d399';
 
   return (
     <div className="flex flex-col items-center justify-center relative">
-      {/* Glow Effect behind timer */}
       <div className={`absolute inset-0 blur-3xl opacity-30 rounded-full ${isActive ? 'animate-pulse' : ''}`} 
            style={{ backgroundColor: strokeColor }} />
 
       <div className="relative w-72 h-72">
         <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-2xl" viewBox="0 0 100 100">
-          {/* Track */}
           <circle cx="50" cy="50" r="45" className="stroke-white/10" strokeWidth="2" fill="none" />
-          {/* Progress */}
           <circle 
             cx="50" cy="50" r="45" 
             stroke={strokeColor}

@@ -23,8 +23,14 @@ const SoundControl: React.FC<SoundControlProps> = ({ sound, volume, onChange }) 
 
       <div className="flex-1 flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <span className={`text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-white/50'}`}>
-            {sound.label}
+          <div className="flex flex-col">
+            <span className={`text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-white/50'}`}>
+                {sound.label}
+            </span>
+            <span className="text-[10px] text-white/30 uppercase tracking-widest">{sound.description}</span>
+          </div>
+          <span className="text-[10px] font-mono text-white/40 bg-white/5 px-2 py-1 rounded">
+            {sound.beat} Hz
           </span>
         </div>
 
@@ -38,14 +44,12 @@ const SoundControl: React.FC<SoundControlProps> = ({ sound, volume, onChange }) 
             onChange={(e) => onChange(parseFloat(e.target.value))}
             className="w-full z-10 opacity-0 cursor-pointer absolute inset-0 h-full"
           />
-          {/* Custom Track Visualization */}
           <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative">
              <div 
                 className={`h-full transition-all duration-100 ease-out ${isActive ? 'bg-white' : 'bg-white/30'}`}
                 style={{ width: `${volume * 100}%` }}
              />
           </div>
-          {/* Custom Thumb Visualization */}
           <div 
             className="h-4 w-4 bg-white rounded-full shadow-lg absolute pointer-events-none transition-all duration-100 ease-out"
             style={{ left: `calc(${volume * 100}% - 8px)` }}

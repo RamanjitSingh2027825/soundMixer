@@ -13,7 +13,6 @@ const SoundControl: React.FC<SoundControlProps> = ({ sound, volume, onChange }) 
 
   return (
     <div className={`group relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-500 border ${isActive ? 'bg-white/10 border-white/20 shadow-lg backdrop-blur-md' : 'bg-white/5 border-white/5 backdrop-blur-sm'}`}>
-      
       <button 
         onClick={() => onChange(isActive ? 0 : 0.5)}
         className={`p-3 rounded-xl transition-all duration-300 ${isActive ? 'bg-white text-black shadow-glow' : 'text-white/50 bg-white/5'}`}
@@ -25,7 +24,7 @@ const SoundControl: React.FC<SoundControlProps> = ({ sound, volume, onChange }) 
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
             <span className={`text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-white/50'}`}>
-                {sound.label}
+              {sound.label}
             </span>
             <span className="text-[10px] text-white/30 uppercase tracking-widest">{sound.description}</span>
           </div>

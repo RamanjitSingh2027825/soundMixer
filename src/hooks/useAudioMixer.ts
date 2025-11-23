@@ -11,37 +11,34 @@ export const useAudioMixer = (phase: 'work' | 'break') => {
   const [isPlaying, setIsPlaying] = useState(false);
   const engineRef = useRef<SoundGenerator | null>(null);
 
-  // Initialize Engine
   useEffect(() => {
     engineRef.current = new SoundGenerator();
     const engine = engineRef.current;
 
     SOUNDS.forEach(sound => {
-      // We now ONLY start binaural generators
-      engine.startBinaural(sound.id, sound.freq, sound.beat);
+      if (sound.type === 'binaural') {
+        engine.startBinaural(sound.id, sound.freq, sound.beat);
+      }
     });
 
     return () => engine.stopAll();
   }, []);
 
-  // Volume & Phase Logic
   useEffect(() => {
     const engine = engineRef.current;
     if (!engine) return;
 
     const isBreak = phase === 'break';
-    // In Break mode, we drop Gamma/Beta (High Intensity) and boost Alpha (Relax)
-    // This is a smarter "Dimmer" than just lowering volume.
     
     if (isPlaying) {
       engine.resume();
       Object.entries(volumes).forEach(([id, vol]) => {
         let finalVol = vol * masterVolume;
 
-        // Dynamic Phase Mixing
+        // Smart Phase Mixing: Drop intensity during breaks
         if (isBreak) {
-            if (id === 'gamma' || id === 'beta') finalVol *= 0.2; // Kill focus waves
-            if (id === 'alpha' || id === 'theta') finalVol = Math.min(1, finalVol * 1.5); // Boost relax waves
+            if (id === 'gamma' || id === 'beta') finalVol *= 0.1; // Kill high intensity
+            if (id === 'alpha' || id === 'theta') finalVol = Math.min(1, finalVol * 1.2); // Boost relax
         }
 
         engine.setVolume(id, finalVol);
@@ -58,7 +55,6 @@ export const useAudioMixer = (phase: 'work' | 'break') => {
   const applyPreset = (presetLevels: Record<string, number>) => {
     const zeroState = SOUNDS.reduce((acc, s) => ({ ...acc, [s.id]: 0 }), {});
     setVolumes({ ...zeroState, ...presetLevels });
-    
     if (!isPlaying && engineRef.current) {
         engineRef.current.resume();
         setIsPlaying(true);

@@ -1,5 +1,3 @@
-// src/audio/audioEngine.ts
-
 let audioCtx: AudioContext | null = null;
 
 export class SoundGenerator {
@@ -14,38 +12,32 @@ export class SoundGenerator {
     this.nodes = {};
   }
 
-  // True Stereo Binaural Beat Generator (Pure Sine Waves)
+  // True Stereo Binaural Beat Generator
   startBinaural(id: string, carrierFreq: number, beatFreq: number) {
     if (this.nodes[id]) return;
 
-    // Create Master Gain for this track
     const masterGain = this.ctx.createGain();
-    masterGain.gain.value = 0; // Start muted
+    masterGain.gain.value = 0;
     masterGain.connect(this.ctx.destination);
 
-    // --- LEFT EAR (Carrier) ---
+    // Left Ear
     const oscL = this.ctx.createOscillator();
     oscL.type = 'sine';
     oscL.frequency.value = carrierFreq;
-    
     const panL = this.ctx.createStereoPanner();
-    panL.pan.value = -1; // Hard Left
-
+    panL.pan.value = -1;
     oscL.connect(panL);
     panL.connect(masterGain);
 
-    // --- RIGHT EAR (Carrier + Beat) ---
+    // Right Ear (Carrier + Beat)
     const oscR = this.ctx.createOscillator();
     oscR.type = 'sine';
-    oscR.frequency.value = carrierFreq + beatFreq; // The Magic happens here
-    
+    oscR.frequency.value = carrierFreq + beatFreq;
     const panR = this.ctx.createStereoPanner();
-    panR.pan.value = 1; // Hard Right
-
+    panR.pan.value = 1;
     oscR.connect(panR);
     panR.connect(masterGain);
 
-    // Start
     oscL.start();
     oscR.start();
 
@@ -54,7 +46,6 @@ export class SoundGenerator {
 
   setVolume(id: string, value: number) {
     if (this.nodes[id]) {
-      // Smooth transition to prevent clicking
       this.nodes[id].gain.gain.setTargetAtTime(value, this.ctx.currentTime, 0.1);
     }
   }

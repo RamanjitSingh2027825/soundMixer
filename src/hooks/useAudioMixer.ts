@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { SOUNDS } from '../data/sounds';
 import { SoundGenerator } from '../audio/audioEngine';
 
-export const useAudioMixer = () => {
+export const useAudioMixer = (phase: 'work' | 'break') => {
+  // Initial state
   const [volumes, setVolumes] = useState<Record<string, number>>(() => 
     SOUNDS.reduce((acc, sound) => ({ ...acc, [sound.id]: 0 }), {})
   );
@@ -10,15 +11,13 @@ export const useAudioMixer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const engineRef = useRef<SoundGenerator | null>(null);
 
-  // Initialize Engine
   useEffect(() => {
     engineRef.current = new SoundGenerator();
     const engine = engineRef.current;
 
-    // Initialize all nodes (muted)
     SOUNDS.forEach(sound => {
       if (sound.type === 'drone') {
-        engine.startOscillator(sound.id, 150, 'sine'); // Low drone
+        engine.startOscillator(sound.id, 150, 'sine'); 
       } else {
         engine.startNoise(sound.id, sound.type as 'white' | 'pink' | 'brown');
       }
@@ -27,34 +26,43 @@ export const useAudioMixer = () => {
     return () => engine.stopAll();
   }, []);
 
-  // Sync React State -> Audio Engine
   useEffect(() => {
     const engine = engineRef.current;
     if (!engine) return;
 
+    const isBreak = phase === 'break';
+    const dimmer = isBreak ? 0.3 : 1.0;
+
     if (isPlaying) {
       engine.resume();
-      // Apply current volumes
       Object.entries(volumes).forEach(([id, vol]) => {
-        engine.setVolume(id, vol * 0.2); // * 0.2 to prevent clipping/loudness
+        let finalVol = vol * 0.2 * dimmer; 
+        if (isBreak && id === 'drone') finalVol = 0; 
+        engine.setVolume(id, finalVol);
       });
     } else {
-      // Mute all if global pause
       SOUNDS.forEach(s => engine.setVolume(s.id, 0));
     }
-  }, [isPlaying, volumes]);
+  }, [isPlaying, volumes, phase]);
 
   const setTrackVolume = (id: string, val: number) => {
     setVolumes(prev => ({ ...prev, [id]: val }));
   };
 
-  const toggleMasterPlay = () => {
-    // Browsers require user interaction to start AudioContext
+  // --- NEW FUNCTION ---
+  const applyPreset = (presetLevels: Record<string, number>) => {
+    // Merge with current to ensure no keys are missing, though preset should cover them
+    setVolumes(prev => ({ ...prev, ...presetLevels }));
     if (!isPlaying && engineRef.current) {
-      engineRef.current.resume();
+        engineRef.current.resume();
+        setIsPlaying(true);
     }
+  };
+
+  const toggleMasterPlay = () => {
+    if (!isPlaying && engineRef.current) engineRef.current.resume();
     setIsPlaying(!isPlaying);
   };
 
-  return { volumes, setTrackVolume, isPlaying, toggleMasterPlay };
+  return { volumes, setTrackVolume, applyPreset, isPlaying, toggleMasterPlay };
 };
